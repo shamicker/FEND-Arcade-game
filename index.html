@@ -4,8 +4,40 @@
     <meta charset="UTF-8">
     <title>Effective JavaScript: Frogger</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+    	body {
+    		background: oldlace;
+    	}
+        #board {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: flex-start;
+            /*width: 100%;*/
+        }
+        #score {
+            border: 10px groove gainsboro;
+            height: 100px;
+            width: 100px;
+        }
+    	canvas {
+    		border: 10px groove gainsboro;
+    		background-color: azure;
+    	}
+    </style>
 </head>
 <body>
+	<header>
+		<p><strong>Welcome to Shauna's Little Arcade Game!</strong>
+        <br><br>
+        <em>Why did the chicken cross the road?</em></p>
+	</header>
+    <main id="board">
+        <aside id="score">
+            <h3>Score:</h3>
+            <h4></h4>
+        </aside>
+    </main>
     <script src="js/resources.js"></script>
     <script src="js/app.js"></script>
     <script src="js/engine.js"></script>
