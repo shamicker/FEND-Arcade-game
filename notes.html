@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Notes - Frogger</title>
+    <style>
+    body {
+    	border: 1px solid red;
+    	height: 100px;
+    }
+    </style>
+</head>
+<body>
+    <canvas width="600" height="600"></canvas>
+    <script>
+        var canvas = document.querySelector("canvas");
+        var ctx = canvas.getContext("2d");
+
+
+        ctx.strokeRect(200,200,40,200);
+
+        // imageData object = {width, height, [data]}
+        var data = ctx.getImageData(0, 0, 600, 600);
+
+        function greenGrid(imageData){
+            // data per pixel is 4 (R,G,B,Alpha)
+            var numPixels = imageData.data.length
+        }
+        ctx.putImageData(imageData, 0, 0);
+
+    </script>
+    <script src="js/notes.js"></script>
+    <script src="js/notes-cars.js"></script>
+</body>
+</html>

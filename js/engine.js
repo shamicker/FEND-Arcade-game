@@ -82,7 +82,12 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+
+        for (i in allEnemies){
+            var bug = allEnemies[i];
+            enemyPosition(bug);
+            checkCollision(player, bug);
+        }
     }
 
     /* This is called by the update function and loops through all of the
@@ -96,7 +101,7 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
-        player.update();
+        //player.update();
     }
 
     /* This function initially draws the "game level", it will then call
@@ -121,6 +126,7 @@ var Engine = (function(global) {
             numCols = 5,
             row, col;
 
+
         /* Loop through the number of rows and columns we've defined above
          * and, using the rowImages array, draw the correct image for that
          * portion of the "grid"
@@ -135,8 +141,15 @@ var Engine = (function(global) {
                  * we're using them over and over.
                  */
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
+                // drawBorder(col, row, col*101, row*83, "orange");
+                drawBorder(col, row+50, (col+1)*100, (row+1)*82.5, "hotpink")
+
             }
         }
+
+        // create a border for each tile as a new image on top of the tiles
+        // ctx.restore();
+        // drawBorder(col - 3.5, row + 45.5, col * 100.5, row * 83, "black");
 
         renderEntities();
     }

@@ -1,0 +1,54 @@
+General:
+ ✔ clone repository @done (16-12-16 20:15)
+ ☐
+ ✘ set up grunt process @cancelled (17-01-12 21:56)
+Update Readme file:
+ include:
+   ☐ how to Run the game
+   ☐ how to Play the game
+Functions:
+  Player:
+    Player Function:
+    ✔ load image (same as Enemy) @done (16-12-18 13:10)
+    ✔ set initial Player location @done (17-01-12 21:56)
+    ✔ goal: reach water @done (17-01-12 21:56)
+    ✔ move left, right, up, down @done (17-01-12 21:56)
+    ✔ limited blocks @done (17-01-12 21:56)
+    ☐
+    Player.Update:
+    ☐ (as similar to Enemy.Update)
+    ☐
+    Player.Render:
+    ✔ (as similar to Enemy.Render) @done (17-01-12 21:56)
+    ☐
+  Enemies:
+    Enemy Function:
+    ✔ load image using this.sprite (already provided) @done (16-12-16 20:16)
+    ✔ set Enemy initial location @done (17-01-12 21:56)
+    ✔ set Enemy speed @done (17-01-12 21:56)
+    ✔ multiple enemies @done (17-01-12 21:56)
+    ✔ move at varying speeds @done (17-01-12 21:56)
+    ☐ move left/right or right/left
+    ✔ limited blocks @done (17-01-12 21:56)
+    Enemy.Update:
+    ✔ updates Enemy location @done (17-01-12 21:56)
+    ☐ handles collision with Player
+    ☐
+  handleInput():
+  ✔ receive user input @done (17-01-12 21:56)
+  ✔ 'allowedKeys' (which key was pressed) moves player @done (17-01-12 21:56)
+  ✔ set Player gameboard boundaries (can't leave screen!) @done (17-01-12 21:56)
+  ✔ when Player reaches water, game resets & initial Player location @done (17-01-12 21:57)
+  ☐
+Game Play - Simple:
+   ✔ player reaches water and wins or score kept @done (17-01-17 16:13)
+   ☐ collision!
+   ☐ game resets at some point
+   ☐
+Play Game!:
+  after all functions set up:
+    ✔ instantiate new Player object @done (16-12-18 13:11)
+    ✔ create several new Enemies @done (16-12-18 13:11)
+      ✔ place in array called 'allEnemies' @done (16-12-18 13:11)
+    ☐ check against rubric
+
