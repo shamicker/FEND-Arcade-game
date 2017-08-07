@@ -4,38 +4,42 @@ var numRows = 6,
     rowHeight = 83,
     colWidth = 101;
 
-function across(x) {
-    return x * colWidth;
+// Where col is the desired column, this should calculate the actual pixel placement
+function across(col) {
+    return col * colWidth;
 }
 
-function down(y) {
-    return y * rowHeight;
+// Calculates the actual pixel placement per row
+function down(row) {
+    return row * rowHeight;
 }
 
 // Enemies our player must avoid
 var Enemy = function() {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
 
     this.width = 99;
     this.height = 67;
-    // y adjustment is -20, to account for
 
+    // Initial setup column
+    this.x = across(-1);
+    // this.x = across(1);
+
+    // Set bug in random stone-tile row
+    // y adjustment is -20, to centre it
     var y = getRandom(1, 3);
-    // var speed = getRandom(1, 4);
-    var speed = 0;
-    var distance = getRandom( across(4), across(14) );
+    this.y = down(y) - 20;
+    // this.y = down(y);
 
-    // this.x = across(-1);
-    this.x = across(1);
-    // this.y = down(y) - 20;
-    this.y = down(y);
+    // Set random speed
+    var speed = getRandom(1, 4);
+    // var speed = 0;
     this.speed = speed * colWidth;
 
-    // how soon it will 'regenerate' - it runs to x-coordinate offscreen
+    // Distance is how far an enemy goes (ie. how long to wait) before regenerating 
+    var distance = getRandom( across(4), across(14) );
     this.distance = distance;
 
 };
@@ -49,7 +53,7 @@ Enemy.prototype.update = function(dt) {
     this.x += this.speed * dt;
     var thisBug = this;
 
-    // when end distance is reached (as per Enemy()), Enemy restarts
+    // when end distance is reached, Enemy restarts
     if ( this.distance <= this.x ) {
         allEnemies.splice( allEnemies.indexOf(thisBug), 1 );
         allEnemies.push( new Enemy() );
@@ -61,6 +65,7 @@ Enemy.prototype.update = function(dt) {
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 
+    // Calculate for borders
     this.left = this.x + 1;
     this.top = this.y + 77;
 
@@ -70,15 +75,18 @@ Enemy.prototype.render = function() {
 
 // ****************************************************************************
 
-// Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
+// Start at (5,2)
 var Player = function(){
     this.sprite = 'images/char-pink-girl.png';
     this.x = across(2);
     // this.y = down(5) - 9;
-    this.y = down(5);
-    // this.y = 5 * 83 - 9;
+
+    // y adjustment is -9, to centre it
+    // this.y = down(5);
+    this.y = 5 * rowHeight - 9;
+
     this.w = 76;
     this.h = 78;
 
@@ -92,6 +100,7 @@ Player.prototype.update = function(dt) {
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 
+    // Calculate borders
     this.left = this.x + 13;
     this.top = this.y + 62;
 
@@ -99,25 +108,25 @@ Player.prototype.render = function() {
 };
 
 Player.prototype.handleInput = function(key){
-    var x = this.x / 100; // should be 0-5
-    var y = (this.y + 9)/83; // should be 0-6
-    var penUltX = 4;
-    var penUltY = 5;
+    var x = this.x / colWidth; // should be 0-5
+    var y = (this.y + 9)/rowHeight; // should be 0-6
+    var lastX = 4;
+    var lastY = 5;
     var lowestX = 1;
     var lowestY = 0;
 
     // remaining on the board, player moves left, right, up, and down
-    if ( key === "right" && x < penUltX ) {
-        this.x += 100;
+    if ( key === "right" && x < lastX ) {
+        this.x += colWidth;
     } else if ( key === 'left' && x > lowestX ) {
-        this.x -= 100;
-    } else if ( key === 'down' && y < penUltY ) {
-        this.y += 83;
+        this.x -= colWidth;
+    } else if ( key === 'down' && y < lastY ) {
+        this.y += rowHeight;
     } else if ( key === 'up' && y > lowestY ) {
-        this.y -= 83;
+        this.y -= rowHeight;
     } else if ( key === 'up' && y <= lowestY ) {
     // when water is reached, player auto-moves to bottom row (same col)
-        this.y = 5 * 83 - 9;
+        this.y = 5 * rowHeight - 9;
         score();
     }
 };
@@ -181,11 +190,11 @@ function getRandom(min, max) {
 }
 // getRandom(0, 5);
 
-// This function counts the number of times the water has been reached
+// This function counts the number of times the water has been reached and displays it
 function score() {
     scoreCount++;
-    document.getElementsByTagName("h4")[0].innerHTML = scoreCount;
-    console.log("scoreCount: " + scoreCount);
+    document.getElementById("count").innerHTML = scoreCount;
+    // console.log("scoreCount: " + scoreCount);
     return scoreCount;
 }
 
@@ -198,7 +207,7 @@ function drawBorder(x, y, width, height, colour){
     ctx.stroke();
 }
 
-// This function should log the player's box dimensions
+// This function should log the player's border box dimensions
 function playerPosition(player){
     // we have x,y and dimensions of player and enemies. Define them as a box
     var playerLeft = player.x + 13,
@@ -211,7 +220,7 @@ function playerPosition(player){
     return [playerLeft, playerRight, playerTop, playerBottom];
 }
 
-// This function should log an enemy's box dimensions
+// This function should log an enemy's border box dimensions
 function enemyPosition(enemy){
     // we have x, y, and dimensions of enemies. Define them as a box
     var enemyLeft = enemy.x + 1,
@@ -222,8 +231,8 @@ function enemyPosition(enemy){
     return [enemyLeft, enemyRight, enemyTop, enemyBottom];
 }
 
-// This function should compare an enemy's box with the player's box.
-// If there's overlap, Collision! Game over! (or 2 more tries?)
+// This function should compare an enemy's box with the player's box. 
+// If there's overlap, Collision! Game over! 
 function checkCollision(player, enemy){
     var [playerLeft, playerRight, playerTop, playerBottom] = playerPosition(player);
     var [enemyLeft, enemyRight, enemyTop, enemyBottom] = enemyPosition(enemy);
@@ -232,7 +241,7 @@ function checkCollision(player, enemy){
         playerRight > enemyLeft &&
         playerTop < enemyBottom &&
         playerBottom > enemyTop) {
-        // console.log("Collision!");
+        console.log("Collision! Game over!");
         enemy.speed = 0;
         return gameReset();
         // return true;
@@ -245,13 +254,20 @@ function checkCollision(player, enemy){
 
 //This function should reset the game.
 function gameReset(){
+
+    // Read best score
+    var best = document.getElementById("best").innerHTML;
+
+    if ( scoreCount > best ){
+        document.getElementById("best").innerHTML = scoreCount;
+    }
+
     allEnemies = [];
     player = new Player();
     scoreCount = 0;
-    document.getElementByID("score").h4.innerHTML = scoreCount;
+    document.getElementById("count").innerHTML = scoreCount;
     initiateEnemies(10);
 
-    // document.getElementByID("bestScore").
 
     return [allEnemies, player, scoreCount, initiateEnemies];
 }
