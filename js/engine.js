@@ -82,12 +82,14 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
+        getBorders(player);
 
-        for (i in allEnemies){
-            var bug = allEnemies[i];
-            enemyPosition(bug);
+        allEnemies.forEach(function(bug) {
+            getBorders(bug);
             checkCollision(player, bug);
-        }
+        });
+
+        // gamePause();
     }
 
     /* This is called by the update function and loops through all of the
@@ -98,8 +100,8 @@ var Engine = (function(global) {
      * render methods.
      */
     function updateEntities(dt) {
-        allEnemies.forEach(function(enemy) {
-            enemy.update(dt);
+        allEnemies.forEach(function(bug) {
+            bug.update(dt);
         });
         //player.update();
     }
@@ -141,8 +143,8 @@ var Engine = (function(global) {
                  * we're using them over and over.
                  */
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
-                // drawBorder(col, row, col*101, row*83, "orange");
-                drawBorder(col, row+50, (col+1)*100, (row+1)*82.5, "hotpink")
+                // drawBorder(col, row+50, col*101, row*83, "orange");
+                // drawBorder(col, row+50.5, (col+1)*100, (row+1)*82.5, "hotpink")
 
             }
         }
@@ -162,8 +164,8 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
-        allEnemies.forEach(function(enemy) {
-            enemy.render();
+        allEnemies.forEach(function(one) {
+            one.render();
         });
 
         player.render();
@@ -197,9 +199,6 @@ var Engine = (function(global) {
      * from within their app.js files.
      */
     global.ctx = ctx;
+
 })(this);
-
-
-
-
 

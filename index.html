@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <title>Effective JavaScript: Frogger</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/modal.css">
     <style>
-/*         * {
+        /* * {
             border: 1px solid red;
         } */
     	body {
@@ -22,10 +23,6 @@
             /* border:  1px solid green; */
             display: flex;
             flex-direction: column;
-        }
-
-        alert {
-            
         }
 
         #board {
@@ -73,30 +70,64 @@
     </main>
 
     <!-- Start Page Modal -->
-<!--     <div id="modal" tabindex="-1" role="dialog" aria-labelledby="start-page" aria-hidden="true">
-        <div class="modal-content">
+    <div id="modal" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="start-page" aria-hidden="true" style="display:block;">
+        <div class="modal-dialog modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="starter">Hello!</h4>
-                <h2 class="modal-subtitle">Choose a character to start the game</h2>
+                <h2 class="modal-title" id="starter">Welcome</h2>
+                <p class="modal-subtitle">Choose a character. </p>
+                <p> Press the "Let me play" button to start the game.</p>
             </div>
             <div class="modal-body">
                 <figure class="character" id="char1">
-                    <img class="character-image" alt="character1">
-                    <figcaption class="character-name">Char 1</figcaption>
+                    <img class="character-image" alt="character1" src="images/char-boy.png">
+                    <figcaption class="character-name">Boy</figcaption>
                 </figure>
+                <figure class="character" id="char1">
+                    <img class="character-image" alt="character1" src="images/char-cat-girl.png">
+                    <figcaption class="character-name">Cat Girl</figcaption>
+                </figure>
+                <figure class="character" id="char1">
+                    <img class="character-image" alt="character1" src="images/char-horn-girl.png">
+                    <figcaption class="character-name">Horn Girl</figcaption>
+                </figure>
+                <figure class="character" id="char1">
+                    <img class="character-image" alt="character1" src="images/char-pink-girl.png">
+                    <figcaption class="character-name">Pink Girl</figcaption>
+                </figure>
+                <figure class="character" id="char1">
+                    <img class="character-image" alt="character1" src="images/char-princess-girl.png">
+                    <figcaption class="character-name">Princess Girl</figcaption>
+                </figure>
+
+                <figure class="character" id="char1">
+                    <img class="character-image" alt="character1" src="images/enemy-bug.png">
+                    <figcaption class="character-name">Princess Girl</figcaption>
+                </figure>
+                <figure class="character" id="char1">
+                    <img class="character-image" alt="character1" src="images/grass-block.png">
+                    <figcaption class="character-name">Princess Girl</figcaption>
+                </figure><figure class="character" id="char1">
+                    <img class="character-image" alt="character1" src="images/stone-block.png">
+                    <figcaption class="character-name">Princess Girl</figcaption>
+                </figure><figure class="character" id="char1">
+                    <img class="character-image" alt="character1" src="images/water-block.png">
+                    <figcaption class="character-name">Princess Girl</figcaption>
+                </figure>
+
             </div>
             <div class="modal-footer">
-                <a role="button" class="button" id="start">Go!</a>
-                <a role="button" class="button" id="cancel">No, I don't want to play.</a>
+                <a role="button" class="btn" id="start">Let me play!</a>
+                <a role="button" class="btn" id="cancel">No, I don't want to play.</a>
             </div>
         </div>
-    </div> -->
+    </div>
     <!-- End Start page Modal -->
 
     <script src="js/modal.js"></script>
     <script src="js/resources.js"></script>
-    <script src="js/app.js"></script>
-    <!-- <script src="js/refactored2.js"></script> -->
+    <script src="js/startScreen.js"></script>
+    <!-- <script async  src="js/app.js"></script> -->
+    <script src="js/refactored2.js"></script>
     <script src="js/engine.js"></script>
 </body>
 </html>
