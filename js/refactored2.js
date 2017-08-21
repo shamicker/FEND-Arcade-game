@@ -12,12 +12,12 @@ var numRows = 6,
 
 var spriteList = [
 		// Where tileX and tileY are the tile coordinates, adj is the y-axis adjustment to center the image
-		{'name':'bug', 'img':'images/enemy-bug.png', 'width':99, 'height':67, 'tileX':-1, 'tileY':getRandom, 'adj':20},
-		{'name':'boy', 'img':'images/char-boy.png', 'width':76, 'height':78, 'tileX':2, 'tileY':5, 'adj':9},
-		{'name':'cat-girl', 'img':'images/char-cat-girl.png', 'width':76, 'height':78, 'tileX':2, 'tileY':5, 'adj':9},
-		{'name':'horn-girl', 'img':'images/char-horn-girl.png', 'width':76, 'height':78, 'tileX':2, 'tileY':5, 'adj':9},
-		{'name':'pink-girl', 'img':'images/char-pink-girl.png', 'width':76, 'height':78, 'tileX':2, 'tileY':5, 'adj':9},
-		{'name':'princess-girl', 'img':'images/char-princess-girl.png', 'width':76, 'height':78, 'tileX':2, 'tileY':5, 'adj':9}
+		{'name':'bug', 'img':'images/enemy-bug.png', 'width':99, 'height':67, 'tileX':1, 'tileY':getRandom, 'adj':20, 'bottomMargin': 77},
+		{'name':'boy', 'img':'images/char-boy.png', 'width':76, 'height':78, 'tileX':2, 'tileY':5, 'adj':9, 'bottomMargin': 62},
+		{'name':'cat-girl', 'img':'images/char-cat-girl.png', 'width':76, 'height':78, 'tileX':2, 'tileY':5, 'adj':9, 'bottomMargin': 62},
+		{'name':'horn-girl', 'img':'images/char-horn-girl.png', 'width':76, 'height':78, 'tileX':2, 'tileY':5, 'adj':9, 'bottomMargin': 62},
+		{'name':'pink-girl', 'img':'images/char-pink-girl.png', 'width':76, 'height':78, 'tileX':2, 'tileY':5, 'adj':9, 'bottomMargin': 62},
+		{'name':'princess-girl', 'img':'images/char-princess-girl.png', 'width':76, 'height':78, 'tileX':2, 'tileY':5, 'adj':9, 'bottomMargin': 62}
 		];
 
 
@@ -36,13 +36,20 @@ var Pawn = function(sprite){
     this.pixelX = across(sprite.tileX);
     this.pixelY = down(sprite.tileY, sprite.adj);
 
-}
+    // Required to calculate image borders in checkCollision()
+    this.bottomMargin = sprite.bottomMargin;
+};
 // Draw pawns on the screen. Required method for the game
 Pawn.prototype.render = function() {
-	// console.log("this.sprite is: ", Resources.get(this.sprite));
-	// console.log("this.pixelX is: ", Resources.get(this.pixelX));
-	// console.log("this.pixelY is: ", Resources.get(this.pixelY));
+	var leftMargin = (tileWidth - this.imgWidth) / 2;
+
+    // we have x,y and dimensions of this. Define them as a box
+    var borderLeft = this.pixelX + leftMargin,
+        borderTop = this.pixelY + this.bottomMargin;
+    drawBorder(borderLeft, borderTop, this.imgWidth, this.imgHeight, "red");
+
 	ctx.drawImage(Resources.get(this.sprite), this.pixelX, this.pixelY);
+
 };
 
 
@@ -52,7 +59,8 @@ var Enemy = function(sprite) {
 	this.pixelY = down(sprite.tileY(1, 3), sprite.adj);
 
 	// Each bug has a different speed
-	var speed = getRandom(1, 4);
+	// var speed = getRandom(1, 4);
+	var speed = 0;
 	this.speed = speed * tileWidth;
 
 	// Distance is how far an enemy goes (ie. how long to wait) before regenerating 
@@ -90,7 +98,7 @@ Player.prototype.constructor = Player;
 Player.prototype.handleInput = function(key){
 	var firstX = 0;
 	var firstY = 0;
-	
+
 	// remaining on the board, player moves left, right, up, down
 	if ( key === "right" && this.tileX < (numCols - 1) ) {
 		this.pixelX += tileWidth;
@@ -129,12 +137,12 @@ function initiateEnemies(howMany) {
 
 // There should be always 10 enemies, but because of 'distance', they
 // may not all be on the board
-var numEnemies = 10;
+var numEnemies = 1;
 initiateEnemies(numEnemies);
 
 
 // Instantiate player in a variable called player
-var player = new Player(spriteList[1]);
+var player = new Player(spriteList[4]);
 
 // Scorekeeper
 var scoreCount = 0;
@@ -170,20 +178,27 @@ function score() {
     return scoreCount;
 }
 
+// This function should draw square border around each entity
+function drawBorder(x, y, width, height, colour){
+    ctx.beginPath();
+    ctx.rect(x, y, width, height);
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = colour;
+    ctx.stroke();
+}
+
 // ************************************************************************************
 
 // This function should log the pawn's border box dimensions
 // FYI, bottomMargin cannot be calculated since the image varies vertically within its... image
-function getBorders(pawn, bottomMargin){
+function getBorders(pawn){
 	var leftMargin = (tileWidth = pawn.imgWidth) / 2;
 
     // we have x,y and dimensions of pawn. Define them as a box
-    var borderLeft = pawn.x + leftMargin,
-        borderTop = pawn.y + bottomMargin,
-        borderRight = borderLeft + pawn.imgWidth,
-        borderBottom = borderTop + pawn.imgHeight;
+    var borderLeft = pawn.tileX + leftMargin,
+        borderTop = pawn.tileY + pawn.bottomMargin;
 
-    return [borderLeft, borderRight, borderTop, borderBottom];
+    return [borderLeft, borderTop, pawn.imgWidth, pawn.imgHeight];
 }
 
 // This function should compare an enemy's box with the player's box. 
@@ -212,6 +227,8 @@ function gameReset(){
 
     // Read best score and log in HTML
     var best = document.getElementById("best").innerHTML;
+    console.log("best is: ", best);
+    console.log("scoreCount is: ", scoreCount);
     if ( scoreCount > best ){
         document.getElementById("best").innerHTML = scoreCount;
     }

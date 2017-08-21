@@ -82,10 +82,8 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        getBorders(player);
 
         allEnemies.forEach(function(bug) {
-            getBorders(bug);
             checkCollision(player, bug);
         });
 
