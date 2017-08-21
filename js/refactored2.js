@@ -28,7 +28,13 @@ var Pawn = function(sprite){
 	// console.log("sprite image is: ", sprite.img);
     this.imgWidth = sprite.width;
     this.imgHeight = sprite.height;
+    // for human reading, tileX and tileY are the simple tile coordinates as the user sees them
+    this.tileX = sprite.tileX;
+    this.tileY = sprite.tileY;
+    this.adjY = sprite.adj;
+    // pixelX and pixelY are the calculations of the simple tile coords to pixel coords
     this.pixelX = across(sprite.tileX);
+    this.pixelY = down(sprite.tileY, sprite.adj);
 
 }
 // Draw pawns on the screen. Required method for the game
@@ -44,8 +50,6 @@ Pawn.prototype.render = function() {
 var Enemy = function(sprite) {
 	Pawn.call(this, sprite);
 	this.pixelY = down(sprite.tileY(1, 3), sprite.adj);
-    console.log("Enemy tileY is: ", this.pixelY);
-
 
 	// Each bug has a different speed
 	var speed = getRandom(1, 4);
@@ -76,9 +80,6 @@ Enemy.prototype.update = function(dt) {
 // Player subclass
 var Player = function(sprite){
 	Pawn.call(this, sprite);
-    this.pixelY = down(sprite.tileY, sprite.adj);
-    console.log("Player's sprite.tileY is: ", sprite.tileY);
-    console.log("pixelY is: ", this.pixelY);
 
 	console.log("New ", sprite.name);
 };
@@ -87,20 +88,26 @@ Player.prototype = Object.create(Pawn.prototype);
 Player.prototype.constructor = Player;
 
 Player.prototype.handleInput = function(key){
-	var firstX = 1;
+	var firstX = 0;
 	var firstY = 0;
+	
 	// remaining on the board, player moves left, right, up, down
 	if ( key === "right" && this.tileX < (numCols - 1) ) {
 		this.pixelX += tileWidth;
+		this.tileX += 1;
 	} else if ( key === 'left' && this.tileX > firstX ){
 		this.pixelX -= tileWidth;
+		this.tileX -= 1;
 	} else if ( key === 'down' && this.tileY < (numRows - 1) ){
 		this.pixelY += tileHeight;
+		this.tileY += 1;
 	} else if ( key === 'up' && this.tileY > firstY ){
 		this.pixelY -= tileHeight;
+		this.tileY -= 1;
 	} else if ( key === 'up' && this.tileY <= firstY ){
 		// when water is reached, player auto-moves to bottom row (same col)
-		this.pixelY = down( (numRows - 1), this.adj );
+		this.tileY = (numRows - 1);
+		this.pixelY = down( this.tileY, this.adjY );
 		score();
 	}
 };
@@ -116,7 +123,7 @@ function initiateEnemies(howMany) {
 		allEnemies.push( new Enemy(enemy) );
 		howMany -= 1;
 	}
-	console.log(numEnemies, "enemies initiated!");
+	// console.log(numEnemies, "enemies initiated!");
 	return allEnemies;
 }
 
@@ -144,6 +151,7 @@ document.addEventListener('keyup', function(e) {
         40: 'down'
     };
     player.handleInput(allowedKeys[e.keyCode]);
+    // console.log("pressed: ", allowedKeys[e.keyCode]);
 });
 
 
@@ -152,8 +160,6 @@ function getRandom(min, max) {
 	min = Math.ceil(min);
 	max = Math.floor(max);
 	var result = Math.floor(Math.random() * (max - min + 1)) + min;
-	console.log("getRandom.this is", min, max);
-	console.log("getRandom is:", result);
 	return result;
 }
 
