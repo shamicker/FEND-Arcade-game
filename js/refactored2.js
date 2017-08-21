@@ -12,7 +12,7 @@ var numRows = 6,
 
 var spriteList = [
 		// Where tileX and tileY are the tile coordinates, adj is the y-axis adjustment to center the image
-		{'name':'bug', 'img':'images/enemy-bug.png', 'width':99, 'height':67, 'tileX':1, 'tileY':getRandom(1,3), 'adj':20},
+		{'name':'bug', 'img':'images/enemy-bug.png', 'width':99, 'height':67, 'tileX':-1, 'tileY':getRandom, 'adj':20},
 		{'name':'boy', 'img':'images/char-boy.png', 'width':76, 'height':78, 'tileX':2, 'tileY':5, 'adj':9},
 		{'name':'cat-girl', 'img':'images/char-cat-girl.png', 'width':76, 'height':78, 'tileX':2, 'tileY':5, 'adj':9},
 		{'name':'horn-girl', 'img':'images/char-horn-girl.png', 'width':76, 'height':78, 'tileX':2, 'tileY':5, 'adj':9},
@@ -29,10 +29,7 @@ var Pawn = function(sprite){
     this.imgWidth = sprite.width;
     this.imgHeight = sprite.height;
     this.pixelX = across(sprite.tileX);
-    // console.log("sprite.tileY is: ", sprite.tileY);
-    // this.tileY = sprite.tileY;
-    // console.log("tileY is: ", this.tileY);
-    // this.pixelY = down(this.tileY, sprite.adj);
+
 }
 // Draw pawns on the screen. Required method for the game
 Pawn.prototype.render = function() {
@@ -46,19 +43,17 @@ Pawn.prototype.render = function() {
 // Enemy subclass
 var Enemy = function(sprite) {
 	Pawn.call(this, sprite);
-	this.pixelY = down(sprite.tileY, sprite.adj);
+	this.pixelY = down(sprite.tileY(1, 3), sprite.adj);
     console.log("Enemy tileY is: ", this.pixelY);
 
 
 	// Each bug has a different speed
-	// var speed = getRandom(1, 4);
-	var speed = 0;
-	// console.log("bug speed is: ", speed);
+	var speed = getRandom(1, 4);
 	this.speed = speed * tileWidth;
 
 	// Distance is how far an enemy goes (ie. how long to wait) before regenerating 
-    // var distance = getRandom( across(4), across(14) );
-    // this.distance = distance;
+    var distance = getRandom( across(4), across(14) );
+    this.distance = distance;
 };
 // create a prototype chain to superclass
 Enemy.prototype = Object.create(Pawn.prototype);
