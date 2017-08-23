@@ -12,7 +12,7 @@ var numRows = 6,
 
 var spriteList = [
 		// Where tileX and tileY are the tile coordinates, adj is the y-axis adjustment to center the image
-		{'name':'bug', 'img':'images/enemy-bug.png', 'width':99, 'height':67, 'tileX':1, 'tileY':getRandom, 'adj':20, 'bottomMargin': 77},
+		{'name':'bug', 'img':'images/enemy-bug.png', 'width':99, 'height':67, 'tileX':-1, 'tileY':getRandom, 'adj':20, 'bottomMargin': 77},
 		{'name':'boy', 'img':'images/char-boy.png', 'width':76, 'height':78, 'tileX':2, 'tileY':5, 'adj':9, 'bottomMargin': 62},
 		{'name':'cat-girl', 'img':'images/char-cat-girl.png', 'width':76, 'height':78, 'tileX':2, 'tileY':5, 'adj':9, 'bottomMargin': 62},
 		{'name':'horn-girl', 'img':'images/char-horn-girl.png', 'width':76, 'height':78, 'tileX':2, 'tileY':5, 'adj':9, 'bottomMargin': 62},
@@ -22,17 +22,13 @@ var spriteList = [
 
 // SuperClass for all moving objects (enemies and player)
 var Pawn = function(sprite){
-	// console.log("sprite is: ", sprite);
 	this.sprite = sprite.img;
 	this.name = sprite.name;
-	// console.log("sprite image is: ", sprite.img);
     this.imgWidth = sprite.width;
     this.imgHeight = sprite.height;
-    // for human reading, tileX and tileY are the simple tile coordinates as the user sees them
-    // this.tileX = sprite.tileX;
-    // this.tileY = sprite.tileY;
+
+    // adjY is for vertical adjustment, per sprite
     this.adjY = sprite.adj;
-    // pixelX and pixelY are the calculations of the simple tile coords to pixel coords
     this.x = findPixelX(sprite.tileX);
     this.y = findPixelY(sprite.tileY, this.adjY);
 
@@ -48,22 +44,23 @@ Pawn.prototype.render = function() {
     //     borderTop = this.y + this.bottomMargin;
     // drawBorder(borderLeft, borderTop, this.imgWidth, this.imgHeight, "red");
 
-    // console.log("pixelX and Y: ", this.pixelX, this.pixelY);
 	ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
 // Enemy subclass
 var Enemy = function(sprite) {
 	Pawn.call(this, sprite);
+
+    // 1 to 3 are the stone tiles of enemies
 	this.y = findPixelY(sprite.tileY(1, 3), this.adjY);
 
 	// Each bug has a different speed
-	// var speed = getRandom(1, 4);
-	var speed = 0;
+	var speed = getRandom(1, 4);
+    // var speed = 1;
 	this.speed = speed * tileWidth;
 
 	// Distance is how far an enemy goes (ie. how long to wait) before regenerating
-    var distance = getRandom( findPixelX(4), findPixelX(14) );
+    var distance = getRandom( findPixelX(numCols - 1), findPixelX(14) );
     this.distance = distance;
 
 };
@@ -92,23 +89,21 @@ var Player = function(sprite){
 Player.prototype = Object.create(Pawn.prototype);
 Player.prototype.constructor = Player;
 
+
 Player.prototype.handleInput = function(key){
 	var lowestRowAndCol = 0
         tileX = this.x / tileWidth,
         tileY = (this.y + this.adjY) / tileHeight;
 
-	// remaining on the board, player moves left, right, up, down
+    // remaining within board boundaries, player moves 1 tile
 	if ( key === "right" && tileX < (numCols - 1) ) {
 		this.x += tileWidth;
 	} else if ( key === 'left' && tileX > lowestRowAndCol ){
 		this.x -= tileWidth;
-		// this.tileX -= 1;
 	} else if ( key === 'down' && tileY < (numRows - 1) ){
 		this.y += tileHeight;
-		// this.tileY += 1;
 	} else if ( key === 'up' && tileY > lowestRowAndCol ){
 		this.y -= tileHeight;
-		// this.tileY -= 1;
 	} else if ( key === 'up' && tileY <= lowestRowAndCol ){
 		// when water is reached, player auto-moves to bottom row (same col)
 		this.y = findPixelY( (numRows - 1), this.adjY );
@@ -123,8 +118,6 @@ Player.prototype.handleInput = function(key){
 var allEnemies = [];
 // which enemy
 var enemy = spriteList[0];
-// which player character
-var char = spriteList[4]
 
 function initiateEnemies(howMany) {
 	while( howMany > 0 ){
@@ -137,9 +130,11 @@ function initiateEnemies(howMany) {
 
 // There should be always 10 enemies, but because of 'distance', they
 // may not all be on the board
-var numEnemies = 1;
+var numEnemies = 10;
 initiateEnemies(numEnemies);
 
+// which player character
+var char = spriteList[4]
 // Instantiate player in a variable called player
 var player = new Player(char);
 
@@ -215,9 +210,6 @@ function checkCollision(player, bug) {
         console.log("Collision! Game over!");
         bug.speed = 0;
         return gameReset();
-    } else {
-        // console.log("Safe!");
-        return;
     }
 }
 
