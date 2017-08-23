@@ -112,7 +112,7 @@ Player.prototype.handleInput = function(key){
     var y = (this.y + 9)/rowHeight; // should be 0-6
     var lastX = 4;
     var lastY = 5;
-    var lowestX = 1;
+    var lowestX = 0;
     var lowestY = 0;
 
     // remaining on the board, player moves left, right, up, and down

@@ -3,10 +3,10 @@ var numRows = 6,
     numCols = 5,
     tileHeight = 83,
     tileWidth = 101,
-	across = function(tileX){
+	findPixelX = function(tileX){
     	return tileX * tileWidth;
 	},
-	down = function(tileY, adj){
+	findPixelY = function(tileY, adj){
     	return tileY * tileHeight - adj;
 	};
 
@@ -25,47 +25,50 @@ var spriteList = [
 var Pawn = function(sprite){
 	// console.log("sprite is: ", sprite);
 	this.sprite = sprite.img;
+	this.name = sprite.name;
 	// console.log("sprite image is: ", sprite.img);
     this.imgWidth = sprite.width;
     this.imgHeight = sprite.height;
     // for human reading, tileX and tileY are the simple tile coordinates as the user sees them
-    this.tileX = sprite.tileX;
-    this.tileY = sprite.tileY;
+    // this.tileX = sprite.tileX;
+    // this.tileY = sprite.tileY;
     this.adjY = sprite.adj;
     // pixelX and pixelY are the calculations of the simple tile coords to pixel coords
-    this.pixelX = across(sprite.tileX);
-    this.pixelY = down(sprite.tileY, sprite.adj);
+    this.x = findPixelX(sprite.tileX);
+    this.y = findPixelY(sprite.tileY, this.adjY);
 
     // Required to calculate image borders in checkCollision()
     this.bottomMargin = sprite.bottomMargin;
 };
 // Draw pawns on the screen. Required method for the game
 Pawn.prototype.render = function() {
-	var leftMargin = (tileWidth - this.imgWidth) / 2;
+    var leftMargin = ((tileWidth - this.imgWidth) / 2) + 1;
 
     // we have x,y and dimensions of this. Define them as a box
-    var borderLeft = this.pixelX + leftMargin,
-        borderTop = this.pixelY + this.bottomMargin;
+    var borderLeft = this.x + leftMargin,
+        borderTop = this.y + this.bottomMargin;
     drawBorder(borderLeft, borderTop, this.imgWidth, this.imgHeight, "red");
 
-	ctx.drawImage(Resources.get(this.sprite), this.pixelX, this.pixelY);
-
+    // console.log("pixelX and Y: ", this.pixelX, this.pixelY);
+	ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
 
 // Enemy subclass
 var Enemy = function(sprite) {
 	Pawn.call(this, sprite);
-	this.pixelY = down(sprite.tileY(1, 3), sprite.adj);
+	this.y = findPixelY(sprite.tileY(1, 3), this.adjY);
 
 	// Each bug has a different speed
 	// var speed = getRandom(1, 4);
 	var speed = 0;
 	this.speed = speed * tileWidth;
 
-	// Distance is how far an enemy goes (ie. how long to wait) before regenerating 
-    var distance = getRandom( across(4), across(14) );
+	// Distance is how far an enemy goes (ie. how long to wait) before regenerating
+    var distance = getRandom( findPixelX(4), findPixelX(14) );
     this.distance = distance;
+
+
 };
 // create a prototype chain to superclass
 Enemy.prototype = Object.create(Pawn.prototype);
@@ -74,11 +77,11 @@ Enemy.prototype.constructor = Enemy;
 
 Enemy.prototype.update = function(dt) {
 	// dt is the delta from engine.js for smooth animation
-	this.pixelX += this.speed * dt;
+	this.x += this.speed * dt;
 	var thisBug = this;
 
 	// when end distance is reached, Enemy restarts
-	if (this.distance <= this.pixelX ) {
+	if (this.distance <= this.x ) {
 		allEnemies.splice( allEnemies.indexOf(thisBug), 1 );
 		allEnemies.push( new Enemy(enemy) );
 	}
@@ -88,8 +91,6 @@ Enemy.prototype.update = function(dt) {
 // Player subclass
 var Player = function(sprite){
 	Pawn.call(this, sprite);
-
-	console.log("New ", sprite.name);
 };
 
 Player.prototype = Object.create(Pawn.prototype);
@@ -98,33 +99,51 @@ Player.prototype.constructor = Player;
 Player.prototype.handleInput = function(key){
 	var firstX = 0;
 	var firstY = 0;
+    console.log("\ntile dimensions before: ", tileWidth, tileHeight);
+    console.log("Before: tile w/h, pixels: ", tileWidth, tileHeight, player.x, player.y);
 
 	// remaining on the board, player moves left, right, up, down
-	if ( key === "right" && this.tileX < (numCols - 1) ) {
+	if ( key === "right" && this.x < (numCols - 1) ) {
 		this.pixelX += tileWidth;
-		this.tileX += 1;
+		// this.tileX += 1;
+        console.log("After: tiles, pixels: ", player.x, player.y, player.pixelX, player.pixelY);
+
 	} else if ( key === 'left' && this.tileX > firstX ){
-		this.pixelX -= tileWidth;
-		this.tileX -= 1;
+		this.x -= tileWidth;
+		// this.tileX -= 1;
+        console.log("After: tiles, pixels: ", player.x, player.y, player.x, player.y);
+
 	} else if ( key === 'down' && this.tileY < (numRows - 1) ){
-		this.pixelY += tileHeight;
+		// this.y += tileHeight;
 		this.tileY += 1;
+        console.log("After: tiles, pixels: ", player.x, player.y, player.x, player.y);
+
 	} else if ( key === 'up' && this.tileY > firstY ){
-		this.pixelY -= tileHeight;
+		this.y -= tileHeight;
 		this.tileY -= 1;
+        console.log("After: tiles, pixels: ", player.x, player.y, player.x, player.y);
+
 	} else if ( key === 'up' && this.tileY <= firstY ){
 		// when water is reached, player auto-moves to bottom row (same col)
-		this.tileY = (numRows - 1);
-		this.pixelY = down( this.tileY, this.adjY );
+		// this.tileY = (numRows - 1);
+		this.y = findPixelY( this.tileY, this.adjY );
+        console.log("After: tiles, pixels: ", player.x, player.y, player.x, player.y);
+y
 		score();
 	}
+
+    console.log("tile dimensions after: ", tileWidth, tileHeight);
+    // console.log("Player's box: ", playerLeft, playerRight, playerTop, playerBottom);
 };
 
 // **********************************************************************************
 
 // Instantiate enemy objects in an array called allEnemies
 var allEnemies = [];
+// which enemy
 var enemy = spriteList[0];
+// which player character
+var char = spriteList[4]
 
 function initiateEnemies(howMany) {
 	while( howMany > 0 ){
@@ -142,7 +161,7 @@ initiateEnemies(numEnemies);
 
 
 // Instantiate player in a variable called player
-var player = new Player(spriteList[4]);
+var player = new Player(char);
 
 // Scorekeeper
 var scoreCount = 0;
@@ -192,21 +211,22 @@ function drawBorder(x, y, width, height, colour){
 // This function should log the pawn's border box dimensions
 // FYI, bottomMargin cannot be calculated since the image varies vertically within its... image
 function getBorders(pawn){
-	var leftMargin = (tileWidth = pawn.imgWidth) / 2;
+	var leftMargin = (tileWidth - pawn.imgWidth) / 2;
 
     // we have x,y and dimensions of pawn. Define them as a box
-    var borderLeft = pawn.tileX + leftMargin,
-        borderTop = pawn.tileY + pawn.bottomMargin;
+    var borderLeft = pawn.x + leftMargin,
+        borderTop = pawn.y + pawn.bottomMargin;
 
     return [borderLeft, borderTop, pawn.imgWidth, pawn.imgHeight];
 }
 
-// This function should compare an enemy's box with the player's box. 
+// This function should compare an enemy's box with the player's box.
 // If there's overlap, it's a collision and Game Over
 function checkCollision(player, bug) {
 	var [playerLeft, playerRight, playerTop, playerBottom] = getBorders(player);
     var [enemyLeft, enemyRight, enemyTop, enemyBottom] = getBorders(bug);
 
+    // console.log("Enemy's box: ", enemyLeft, enemyRight, enemyTop, enemyBottom);
     if (playerLeft < enemyRight &&
         playerRight > enemyLeft &&
         playerTop < enemyBottom &&
@@ -227,15 +247,18 @@ function gameReset(){
 
     // Read best score and log in HTML
     var best = document.getElementById("best").innerHTML;
-    console.log("best is: ", best);
-    console.log("scoreCount is: ", scoreCount);
+    if ( best === "" ) {
+    	best = 0;
+    }
+    // console.log("best is: ", best);
+    // console.log("scoreCount is: ", scoreCount);
     if ( scoreCount > best ){
         document.getElementById("best").innerHTML = scoreCount;
     }
 
     // reset the instantiations and the current score
     allEnemies = [];
-    player = new Player(spriteList[1]);
+    player = new Player(char);
     scoreCount = 0;
     document.getElementById("count").innerHTML = scoreCount;
     initiateEnemies(numEnemies);
@@ -243,3 +266,4 @@ function gameReset(){
 
     return [allEnemies, player, scoreCount, initiateEnemies];
 }
+// gameReset();
