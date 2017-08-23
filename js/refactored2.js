@@ -20,7 +20,6 @@ var spriteList = [
 		{'name':'princess-girl', 'img':'images/char-princess-girl.png', 'width':76, 'height':78, 'tileX':2, 'tileY':5, 'adj':9, 'bottomMargin': 62}
 		];
 
-
 // SuperClass for all moving objects (enemies and player)
 var Pawn = function(sprite){
 	// console.log("sprite is: ", sprite);
@@ -42,17 +41,16 @@ var Pawn = function(sprite){
 };
 // Draw pawns on the screen. Required method for the game
 Pawn.prototype.render = function() {
-    var leftMargin = ((tileWidth - this.imgWidth) / 2) + 1;
+    var hMargin = ((tileWidth - this.imgWidth) / 2) + 1;
 
     // we have x,y and dimensions of this. Define them as a box
-    var borderLeft = this.x + leftMargin,
-        borderTop = this.y + this.bottomMargin;
-    drawBorder(borderLeft, borderTop, this.imgWidth, this.imgHeight, "red");
+    // var borderLeft = this.x + hMargin,
+    //     borderTop = this.y + this.bottomMargin;
+    // drawBorder(borderLeft, borderTop, this.imgWidth, this.imgHeight, "red");
 
     // console.log("pixelX and Y: ", this.pixelX, this.pixelY);
 	ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
-
 
 // Enemy subclass
 var Enemy = function(sprite) {
@@ -67,7 +65,6 @@ var Enemy = function(sprite) {
 	// Distance is how far an enemy goes (ie. how long to wait) before regenerating
     var distance = getRandom( findPixelX(4), findPixelX(14) );
     this.distance = distance;
-
 
 };
 // create a prototype chain to superclass
@@ -86,7 +83,6 @@ Enemy.prototype.update = function(dt) {
 		allEnemies.push( new Enemy(enemy) );
 	}
 };
-
 
 // Player subclass
 var Player = function(sprite){
@@ -144,7 +140,6 @@ function initiateEnemies(howMany) {
 var numEnemies = 1;
 initiateEnemies(numEnemies);
 
-
 // Instantiate player in a variable called player
 var player = new Player(char);
 
@@ -163,9 +158,7 @@ document.addEventListener('keyup', function(e) {
         40: 'down'
     };
     player.handleInput(allowedKeys[e.keyCode]);
-    console.log("pressed: ", allowedKeys[e.keyCode]);
 });
-
 
 // This function return a whole number between 2 numbers, inclusively
 function getRandom(min, max) {
@@ -196,22 +189,25 @@ function drawBorder(x, y, width, height, colour){
 // This function should log the pawn's border box dimensions
 // FYI, bottomMargin cannot be calculated since the image varies vertically within its... image
 function getBorders(pawn){
-	var leftMargin = (tileWidth - pawn.imgWidth) / 2;
+	var hMargin = (tileWidth - pawn.imgWidth) / 2;
 
     // we have x,y and dimensions of pawn. Define them as a box
-    var borderLeft = pawn.x + leftMargin,
-        borderTop = pawn.y + pawn.bottomMargin;
+    var borderLeft = pawn.x + hMargin,
+        borderTop = pawn.y + pawn.bottomMargin,
+        borderRight = borderLeft + pawn.imgWidth,
+        borderBottom = borderTop + pawn.imgHeight;
 
-    return [borderLeft, borderTop, pawn.imgWidth, pawn.imgHeight];
+    // clockwise from left
+    return [borderLeft, borderTop, borderRight, borderBottom];
 }
 
 // This function should compare an enemy's box with the player's box.
 // If there's overlap, it's a collision and Game Over
 function checkCollision(player, bug) {
-	var [playerLeft, playerRight, playerTop, playerBottom] = getBorders(player);
-    var [enemyLeft, enemyRight, enemyTop, enemyBottom] = getBorders(bug);
+    // always clockwise from left
+	var [playerLeft, playerTop, playerRight, playerBottom] = getBorders(player);
+    var [enemyLeft, enemyTop, enemyRight, enemyBottom] = getBorders(bug);
 
-    // console.log("Enemy's box: ", enemyLeft, enemyRight, enemyTop, enemyBottom);
     if (playerLeft < enemyRight &&
         playerRight > enemyLeft &&
         playerTop < enemyBottom &&
