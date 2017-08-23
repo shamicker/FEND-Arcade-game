@@ -59,6 +59,7 @@ var Engine = (function(global) {
          * function again as soon as the browser is able to draw another frame.
          */
         win.requestAnimationFrame(main);
+
     }
 
     /* This function does some initial setup that should only occur once,
@@ -82,10 +83,8 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        getBorders(player);
 
         allEnemies.forEach(function(bug) {
-            getBorders(bug);
             checkCollision(player, bug);
         });
 
@@ -103,7 +102,7 @@ var Engine = (function(global) {
         allEnemies.forEach(function(bug) {
             bug.update(dt);
         });
-        //player.update();
+        // player.update();
     }
 
     /* This function initially draws the "game level", it will then call
@@ -164,8 +163,8 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
-        allEnemies.forEach(function(one) {
-            one.render();
+        allEnemies.forEach(function(bug) {
+            bug.render();
         });
 
         player.render();
