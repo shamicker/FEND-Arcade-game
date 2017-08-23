@@ -38,7 +38,7 @@ var Enemy = function() {
     // var speed = 0;
     this.speed = speed * colWidth;
 
-    // Distance is how far an enemy goes (ie. how long to wait) before regenerating 
+    // Distance is how far an enemy goes (ie. how long to wait) before regenerating
     var distance = getRandom( across(4), across(14) );
     this.distance = distance;
 
@@ -126,7 +126,7 @@ Player.prototype.handleInput = function(key){
         this.y -= rowHeight;
     } else if ( key === 'up' && y <= lowestY ) {
     // when water is reached, player auto-moves to bottom row (same col)
-        this.y = 5 * rowHeight - 9;
+        this.y = lastY * rowHeight - 9;
         score();
     }
 };
@@ -231,8 +231,8 @@ function enemyPosition(enemy){
     return [enemyLeft, enemyRight, enemyTop, enemyBottom];
 }
 
-// This function should compare an enemy's box with the player's box. 
-// If there's overlap, Collision! Game over! 
+// This function should compare an enemy's box with the player's box.
+// If there's overlap, Collision! Game over!
 function checkCollision(player, enemy){
     var [playerLeft, playerRight, playerTop, playerBottom] = playerPosition(player);
     var [enemyLeft, enemyRight, enemyTop, enemyBottom] = enemyPosition(enemy);

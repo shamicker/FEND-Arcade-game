@@ -97,43 +97,28 @@ Player.prototype = Object.create(Pawn.prototype);
 Player.prototype.constructor = Player;
 
 Player.prototype.handleInput = function(key){
-	var firstX = 0;
-	var firstY = 0;
-    console.log("\ntile dimensions before: ", tileWidth, tileHeight);
-    console.log("Before: tile w/h, pixels: ", tileWidth, tileHeight, player.x, player.y);
+	var lowestRowAndCol = 0
+        tileX = this.x / tileWidth,
+        tileY = (this.y + this.adjY) / tileHeight;
 
 	// remaining on the board, player moves left, right, up, down
-	if ( key === "right" && this.x < (numCols - 1) ) {
-		this.pixelX += tileWidth;
-		// this.tileX += 1;
-        console.log("After: tiles, pixels: ", player.x, player.y, player.pixelX, player.pixelY);
-
-	} else if ( key === 'left' && this.tileX > firstX ){
+	if ( key === "right" && tileX < (numCols - 1) ) {
+		this.x += tileWidth;
+	} else if ( key === 'left' && tileX > lowestRowAndCol ){
 		this.x -= tileWidth;
 		// this.tileX -= 1;
-        console.log("After: tiles, pixels: ", player.x, player.y, player.x, player.y);
-
-	} else if ( key === 'down' && this.tileY < (numRows - 1) ){
-		// this.y += tileHeight;
-		this.tileY += 1;
-        console.log("After: tiles, pixels: ", player.x, player.y, player.x, player.y);
-
-	} else if ( key === 'up' && this.tileY > firstY ){
+	} else if ( key === 'down' && tileY < (numRows - 1) ){
+		this.y += tileHeight;
+		// this.tileY += 1;
+	} else if ( key === 'up' && tileY > lowestRowAndCol ){
 		this.y -= tileHeight;
-		this.tileY -= 1;
-        console.log("After: tiles, pixels: ", player.x, player.y, player.x, player.y);
-
-	} else if ( key === 'up' && this.tileY <= firstY ){
+		// this.tileY -= 1;
+	} else if ( key === 'up' && tileY <= lowestRowAndCol ){
 		// when water is reached, player auto-moves to bottom row (same col)
-		// this.tileY = (numRows - 1);
-		this.y = findPixelY( this.tileY, this.adjY );
-        console.log("After: tiles, pixels: ", player.x, player.y, player.x, player.y);
-y
+		this.y = findPixelY( (numRows - 1), this.adjY );
 		score();
 	}
 
-    console.log("tile dimensions after: ", tileWidth, tileHeight);
-    // console.log("Player's box: ", playerLeft, playerRight, playerTop, playerBottom);
 };
 
 // **********************************************************************************
@@ -178,7 +163,7 @@ document.addEventListener('keyup', function(e) {
         40: 'down'
     };
     player.handleInput(allowedKeys[e.keyCode]);
-    // console.log("pressed: ", allowedKeys[e.keyCode]);
+    console.log("pressed: ", allowedKeys[e.keyCode]);
 });
 
 
