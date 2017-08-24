@@ -4,78 +4,32 @@
     <meta charset="UTF-8">
     <title>Effective JavaScript: Frogger</title>
     <link rel="stylesheet" href="css/style.css">
-    <!-- <link rel="stylesheet" href="css/modal.css"> -->
     <style>
-        /* * {
-            border: 1px solid red;
-        } */
-    	body {
-    		background: oldlace;
-            text-align: center;
-    	}
 
-        canvas {
-            border: 10px groove gainsboro;
-            background-color: azure;
-        }
-
-        aside {
-            /* border:  1px solid green; */
-            display: flex;
-            flex-direction: column;
-        }
-
-        #board {
-            display: flex;
-            justify-content: space-around;
-        }
-
-        .scoreContainer {
-            /* border:  2px solid orange; */
-            height: 50%;
-        }
-
-        .score {
-            border: 10px groove gainsboro;
-            height: 100px;
-            width: 100px;
-        }
 
     </style>
 </head>
 <body data-toggle="modal" data-target="#start-page">
 	<header>
-		<p>
-            <strong>Welcome to my little arcade game</strong>
-            <br><br>
-            <em>Look out for traffic!</em>
-            <!-- <br><br> -->
-        </p>
+        <h1>Welcome to my little arcade game!</h1>
+        <p>Use the keyboard arrow keys to move the player around the board.</p>
+        <p><em>Look out for traffic!</em></p>
 	</header>
     <main id="board">
         <aside>
-            <div class="scoreContainer">
                 <div class="score">
-                    <h3>Score:</h3>
-                    <h4 id="count"></h4>
+                    <h2>Score:</h2>
+                    <p id="count"></p>
                 </div>
-            </div>
-            <div class="scoreContainer">
                 <div class="score">
-                    <h3>Best Score:</h3>
-                    <h4 id="best"></h4>
+                    <h2>Best Score:</h2>
+                    <p id="best"></p>
                 </div>
-            </div>
         </aside>
     </main>
 
-
-
-    <!-- <script src="js/modal.js"></script> -->
     <script src="js/resources.js"></script>
-    <!-- <script src="js/startScreen.js"></script> -->
-    <!-- <script async  src="js/app.js"></script> -->
-    <script src="js/refactored2.js"></script>
+    <script async  src="js/app.js"></script>
     <script src="js/engine.js"></script>
 </body>
 </html>

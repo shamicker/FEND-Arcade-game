@@ -1,8 +1,36 @@
-/* body {
+body {
+    background: oldlace;
     text-align: center;
 }
 
-#bestScore {
-	display: none;
+header {
+    margin-top: 30px;
 }
- */
+
+h1,
+h2 {
+    font-size: 1.2em;
+}
+
+p {
+    margin: 10px auto 0;
+}
+
+aside {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.score {
+    border: 2px groove gainsboro;
+    height: 120px;
+    width: 120px;
+}
+
+#board {
+    display: flex;
+    justify-content: space-around;
+    max-width: 800px;
+    margin: auto;
+}
